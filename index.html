@@ -13,19 +13,54 @@
 
     <title>SPA Universe</title>
 </head>
-<body id="home">
+<body>
     <div class="page">
         <nav class="nav">
             <img src="images/logo.svg" alt="logo">
             <ul class="item">
-                <a href="#"><li class="items active">Home</li></a>
-                <a href="#"><li class="items">O Universo</li></a>
-                <a href="#"><li class="items">Exploração</li></a>
+                <a href="/" onclick="route()" class="items active">Home</a>
+                <a href="/universe" onclick="route()" class="items">O Universo</a>
+                <a href="/exploration" onclick="route()" class="items">Exploração</a>
             </ul>
         </nav>
 
         <main id="app"></main>
-        
     </div>
+
+    <script>
+        const routes = {
+          "/": "/pages/home.html",
+          "/universe": "/pages/universe.html",
+          "/exploration": "/pages/exploration.html",
+          404: "/pages/404.html",
+        }
+    
+        function route(event) {
+          event = event || window.event
+          event.preventDefault()
+
+          window.history.pushState({}, "", event.target.href)
+    
+          handle()
+        }
+    
+        function handle() {
+          const { pathname }  = window.location
+          const route = routes[pathname] || routes[404]
+    
+          fetch(route)
+          .then(data => data.text())
+          .then(html => {
+            document.querySelector("#app").innerHTML = html
+          })
+        }
+
+        handle()
+
+        window.onpopstate = () => handle()
+        window.route = () => route()
+        
+      </script>
+
 </body>
 </html>
